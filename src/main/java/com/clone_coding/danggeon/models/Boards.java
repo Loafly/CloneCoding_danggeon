@@ -1,5 +1,6 @@
 package com.clone_coding.danggeon.models;
 
+import com.clone_coding.danggeon.dto.BoardsRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,5 +19,10 @@ public class Boards {
 
     @Column(nullable = false)
     private String contents;
+
+    public Boards(BoardsRequestDto boardsRequestDto){
+        this.title = boardsRequestDto.getTitle();
+        this.contents = boardsRequestDto.getContents();
+    }
 
 }

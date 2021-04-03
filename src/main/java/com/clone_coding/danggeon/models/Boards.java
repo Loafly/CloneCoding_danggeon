@@ -20,6 +20,10 @@ public class Boards {
     @Column(nullable = false)
     private String contents;
 
+    @ManyToOne
+    @JoinColumn(name = "USER_ID")
+    private User user;
+  
     public Boards(BoardsRequestDto boardsRequestDto){
         this.title = boardsRequestDto.getTitle();
         this.contents = boardsRequestDto.getContents();

@@ -19,4 +19,8 @@ public class Boards {
     @Column(nullable = false)
     private String contents;
 
+    @ManyToOne
+    @JoinColumn(name = "USER_ID")
+    private User user;
+
 }

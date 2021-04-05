@@ -1,11 +1,13 @@
 package com.clone_coding.danggeon.controller;
 
+import com.clone_coding.danggeon.dto.UserCheckNameDto;
 import com.clone_coding.danggeon.dto.UserSignupRequestDto;
 import com.clone_coding.danggeon.handler.CreateError;
 import com.clone_coding.danggeon.models.User;
-import com.clone_coding.danggeon.service.UserLoginService;
+import com.clone_coding.danggeon.service.UserService;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,11 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.List;
 
+@CrossOrigin(origins = "*")
 @RestController
 public class UserSignupController {
-    private final UserLoginService userService;
+    private final UserService userService;
 
-    public UserSignupController(UserLoginService userService) {
+    public UserSignupController(UserService userService) {
         this.userService = userService;
     }
 
@@ -34,11 +37,16 @@ public class UserSignupController {
         if (!flag) {
             return new CreateError().error("비밀번호가 일치하지 않습니다.");
         }
-
-
-
         User saveUser = userService.save(requestDto);
         return saveUser;
+    }
 
+    //중복회원 검사
+    @PostMapping("/api/checkusername")
+    public Object checkUserName(@RequestBody UserCheckNameDto userCheckNameDto) {
+        if(userService.existByUsername(userCheckNameDto)) {
+            return new CreateError().error("이미 존재하는 회원입니다.");
+        }
+        return new CreateError().ok("사용가능한 아이디입니다.");
     }
 }

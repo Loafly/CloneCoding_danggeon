@@ -28,7 +28,7 @@ public class UserLoginService {
         User saveUser = userRepository.save(user);
         return saveUser;
     }
-
+    //회원가입 비밀번호 체크 유효성 검사.
     public boolean checkPassword(UserSignupRequestDto requestDto) {
         if (!requestDto.getPassword().equals(requestDto.getPwcheck())) {
             return false;

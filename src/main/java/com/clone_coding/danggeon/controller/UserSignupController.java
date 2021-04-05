@@ -1,11 +1,9 @@
 package com.clone_coding.danggeon.controller;
 
 import com.clone_coding.danggeon.dto.UserSignupRequestDto;
-import com.clone_coding.danggeon.handler.CustomErrorResponse;
+import com.clone_coding.danggeon.handler.CreateError;
 import com.clone_coding.danggeon.models.User;
 import com.clone_coding.danggeon.service.UserLoginService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,12 +27,15 @@ public class UserSignupController {
         if (bindingResult.hasErrors()) {
             List<ObjectError> allErrors = bindingResult.getAllErrors();
             String errorMessage = allErrors.get(0).getDefaultMessage();
-            HttpStatus status = HttpStatus.BAD_REQUEST;
-            CustomErrorResponse errors = new CustomErrorResponse(errorMessage,status.value());
-            return ResponseEntity
-                    .status(status)
-                    .body(errors);
+            return new CreateError().error(errorMessage);
         }
+
+        boolean flag = userService.checkPassword(requestDto);
+        if (!flag) {
+            return new CreateError().error("비밀번호가 일치하지 않습니다.");
+        }
+
+
 
         User saveUser = userService.save(requestDto);
         return saveUser;

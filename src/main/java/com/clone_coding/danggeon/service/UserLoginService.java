@@ -1,6 +1,5 @@
 package com.clone_coding.danggeon.service;
 
-import com.clone_coding.danggeon.dto.UserLoginRequestDto;
 import com.clone_coding.danggeon.dto.UserSignupRequestDto;
 import com.clone_coding.danggeon.models.User;
 import com.clone_coding.danggeon.repository.UserRepository;
@@ -28,5 +27,12 @@ public class UserLoginService {
 
         User saveUser = userRepository.save(user);
         return saveUser;
+    }
+
+    public boolean checkPassword(UserSignupRequestDto requestDto) {
+        if (!requestDto.getPassword().equals(requestDto.getPwcheck())) {
+            return false;
+        }
+        return true;
     }
 }

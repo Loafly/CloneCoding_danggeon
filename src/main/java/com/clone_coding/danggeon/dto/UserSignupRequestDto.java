@@ -27,4 +27,7 @@ public class UserSignupRequestDto {
     @Email(message = "email 형식을 지켜주세요.")
     private String email;
 
+    @NotBlank(message = "비밀번호 확인은 필수입니다.")
+    private String pwcheck;
+
 }

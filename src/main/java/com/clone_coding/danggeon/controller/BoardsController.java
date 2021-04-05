@@ -4,7 +4,10 @@ import com.clone_coding.danggeon.dto.BoardsRequestDto;
 import com.clone_coding.danggeon.models.Boards;
 import com.clone_coding.danggeon.repository.BoardsRepository;
 import com.clone_coding.danggeon.service.BoardsService;
+import jdk.nashorn.internal.runtime.regexp.joni.exception.ErrorMessages;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,10 +41,18 @@ public class BoardsController {
         return boardsService.getBoard(id);
     }
 
-    @GetMapping("/api/boards/search/{text}")
-    public List<Boards> getBoardSearch(@PathVariable String text){
-        System.out.println("getBoardSearch");
-        return boardsService.getBoardsSearch("%" + text + "%");
+//    Get요청 시 /api/boards/search?text=내용
+    @GetMapping("/api/boards/search")
+    public Object getBoardSearch(@RequestParam String text){
+        try{
+            List<Boards> boardsList = boardsService.getBoardsSearch(text);
+            System.out.println("getBoardSearch");
+            return boardsList;
+        }
+        catch (Exception ignore)
+        {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/api/boards")

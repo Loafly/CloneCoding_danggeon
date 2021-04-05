@@ -23,8 +23,12 @@ public class BoardsService {
     }
 
     public List<Boards> getBoardsSearch(String text){
-        return boardsRepository.findByTitleLike(text);
+        if (text.isEmpty()){
+            throw new IllegalArgumentException("텍스트를 입력해 주세요.");
+        }
 
+        text = "%" + text + "%";
+        return boardsRepository.findByTitleLikeOrContentsLike(text,text);
     }
 
 

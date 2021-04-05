@@ -6,6 +6,7 @@ import com.clone_coding.danggeon.models.User;
 import com.clone_coding.danggeon.service.UserLoginService;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +15,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class UserSignupController {
     private final UserLoginService userService;
 
@@ -34,8 +36,6 @@ public class UserSignupController {
         if (!flag) {
             return new CreateError().error("비밀번호가 일치하지 않습니다.");
         }
-
-
 
         User saveUser = userService.save(requestDto);
         return saveUser;

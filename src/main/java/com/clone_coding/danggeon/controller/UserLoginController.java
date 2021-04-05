@@ -1,15 +1,14 @@
 package com.clone_coding.danggeon.controller;
 
-import com.clone_coding.danggeon.dto.Header;
 import com.clone_coding.danggeon.dto.UserLoginRequestDto;
 import com.clone_coding.danggeon.handler.CustomErrorResponse;
-import com.clone_coding.danggeon.models.User;
 import com.clone_coding.danggeon.repository.UserRepository;
 import com.clone_coding.danggeon.service.UserLoginService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.List;
 
+@CrossOrigin(origins = "*")
 @RestController
 public class UserLoginController {
     private final UserLoginService userService;

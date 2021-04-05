@@ -1,8 +1,8 @@
 package com.clone_coding.danggeon.controller;
 
 import com.clone_coding.danggeon.dto.BoardsRequestDto;
+import com.clone_coding.danggeon.handler.CustomErrorResponse;
 import com.clone_coding.danggeon.models.Boards;
-import com.clone_coding.danggeon.models.CustomErrorResponse;
 import com.clone_coding.danggeon.repository.BoardsRepository;
 import com.clone_coding.danggeon.service.BoardsService;
 import org.springframework.beans.factory.annotation.Autowired;

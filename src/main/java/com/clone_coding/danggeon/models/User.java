@@ -1,5 +1,8 @@
 package com.clone_coding.danggeon.models;
 
+
+import com.clone_coding.danggeon.dto.UserLoginRequestDto;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,4 +27,11 @@ public class User extends Timestamped {
 
     @Column(nullable = false)
     private String email;
+
+    public User(UserLoginRequestDto requestDto) {
+        this.username = requestDto.getUsername();
+        this.password = requestDto.getPassword();
+    }
+
+
 }

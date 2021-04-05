@@ -27,4 +27,6 @@ public class UserSignupRequestDto {
     @Email(message = "email 형식을 지켜주세요.")
     private String email;
 
+
+
 }

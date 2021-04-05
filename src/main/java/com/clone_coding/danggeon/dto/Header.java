@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -30,15 +30,16 @@ public class Header<T> {
     public static <T> Header<T> OK() {
         return (Header<T>)Header.builder()
                 .transactionTime(LocalDateTime.now())
-                .resultCode("OK")
+                .resultCode("ok")
                 .build();
     }
 
     //ERROR
     public static <T> Header<T> ERROR(String[] description) {
+        String str = String.valueOf(HttpStatus.BAD_REQUEST);
         return (Header<T>)Header.builder()
                 .transactionTime(LocalDateTime.now())
-                .resultCode("ERROR")
+                .resultCode(str)
                 .description(description)
                 .build();
     }

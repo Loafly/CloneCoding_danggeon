@@ -1,7 +1,13 @@
 package com.clone_coding.danggeon.controller;
 
+import com.clone_coding.danggeon.dto.Header;
 import com.clone_coding.danggeon.dto.UserLoginRequestDto;
+import com.clone_coding.danggeon.handler.CustomErrorResponse;
+import com.clone_coding.danggeon.models.User;
+import com.clone_coding.danggeon.repository.UserRepository;
 import com.clone_coding.danggeon.service.UserLoginService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,24 +20,31 @@ import java.util.List;
 @RestController
 public class UserLoginController {
     private final UserLoginService userService;
+    private final UserRepository userRepository;
 
-    public UserLoginController(UserLoginService userService) {
+    public UserLoginController(UserLoginService userService, UserRepository userRepository) {
         this.userService = userService;
+        this.userRepository = userRepository;
     }
+
+
     /*
         UserLoginRequestDto에서의 vaild 조건에 맞지 않으면 메세지와 400에러가 응답으로 반환된다.
      */
-//    @PostMapping("/api/login")
-//    public Object userLogin(@Valid @RequestBody UserLoginRequestDto requestDto, BindingResult bindingResult) {
-//        if(bindingResult.hasErrors()) {
-//            List<ObjectError> allErrors = bindingResult.getAllErrors();
-//            String[] errors = new String[allErrors.size()];
-//            for (int i=0; i<allErrors.size(); i++) {
-//                errors[i] = String.valueOf(allErrors.get(i).getDefaultMessage());
-//            }
-//            return Header.ERROR(errors);
-//        }
-//        return Header.OK();
-//    }
+    @PostMapping("/api/login")
+    public Object userLogin(@Valid @RequestBody UserLoginRequestDto requestDto, BindingResult bindingResult) {
+        if(bindingResult.hasErrors()) {
+            List<ObjectError> allErrors = bindingResult.getAllErrors();
+            String errorMessage = allErrors.get(0).getDefaultMessage();
+            HttpStatus status = HttpStatus.BAD_REQUEST;
+            CustomErrorResponse errors = new CustomErrorResponse(errorMessage,status.value());
+            return ResponseEntity
+                    .status(status)
+                    .body(errors);
+        }
+        String str = "yes";
+        return str;
+    }
+
 
 }

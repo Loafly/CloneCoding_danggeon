@@ -17,6 +17,7 @@ import java.util.List;
 
 @CrossOrigin(origins = "*")
 @RestController
+@CrossOrigin(origins = "*")
 public class UserSignupController {
     private final UserService userService;
 

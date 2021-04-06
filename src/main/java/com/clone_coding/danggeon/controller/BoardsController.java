@@ -1,6 +1,7 @@
 package com.clone_coding.danggeon.controller;
 
 import com.clone_coding.danggeon.dto.BoardsRequestDto;
+import com.clone_coding.danggeon.handler.CustomErrorResponse;
 import com.clone_coding.danggeon.models.Boards;
 import com.clone_coding.danggeon.repository.BoardsRepository;
 import com.clone_coding.danggeon.service.BoardsService;
@@ -50,7 +51,13 @@ public class BoardsController {
         }
         catch (Exception ignore)
         {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST);
+            String errorMessage = "test";
+            HttpStatus status = HttpStatus.BAD_REQUEST;
+            CustomErrorResponse errors = new CustomErrorResponse(errorMessage,status.value());
+
+            return ResponseEntity
+                    .status(status)
+                    .body(errors);
         }
     }
 

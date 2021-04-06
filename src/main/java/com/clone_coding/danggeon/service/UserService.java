@@ -1,9 +1,13 @@
 package com.clone_coding.danggeon.service;
 
+import com.clone_coding.danggeon.bcrypt.EncryptHelper;
 import com.clone_coding.danggeon.dto.UserCheckNameDto;
+import com.clone_coding.danggeon.dto.UserLoginRequestDto;
 import com.clone_coding.danggeon.dto.UserSignupRequestDto;
+import com.clone_coding.danggeon.handler.JwtTokenProvider;
 import com.clone_coding.danggeon.models.User;
 import com.clone_coding.danggeon.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,17 +17,21 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class UserService {
     private final UserRepository userRepository;
-//    private final PasswordEncoder passwordEncoder;
+    private final EncryptHelper encryptHelper;
+    private JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
 
-    public UserService(UserRepository userRepository) {
+//    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    public UserService(UserRepository userRepository, EncryptHelper encryptHelper) {
         this.userRepository = userRepository;
+        this.encryptHelper = encryptHelper;
     }
 
 
     @Transactional
     public User save(UserSignupRequestDto requestDto) {
         String username = requestDto.getUsername();
-        String password = requestDto.getPassword();
+        String password = encryptHelper.encrypt(requestDto.getPassword());
         String email = requestDto.getEmail();
 
         User user = new User(username,password,email);
@@ -49,5 +57,17 @@ public class UserService {
     public List<User> findAll() {
         List<User> users = userRepository.findAll();
         return users;
+    }
+    //로그인 회원아이디를 찾고 저장된 아이디의 비밀번호와 유효성 검사
+    public boolean checkUsernameAndPassword(UserLoginRequestDto requestDto) {
+        User findUsername = userRepository.findByUsername(requestDto.getUsername());
+        if (encryptHelper.isMatch(requestDto.getPassword(), findUsername.getPassword())){
+            return true;
+        }else
+            return false;
+    }
+
+    public String createToken(UserLoginRequestDto requestDto) {
+        return jwtTokenProvider.createToken(requestDto.getUsername());
     }
 }

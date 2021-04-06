@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.util.List;
 
 //http://clonefront.me.s3-website.ap-northeast-2.amazonaws.com/
@@ -43,7 +46,7 @@ public class BoardsController {
 
 //    Get요청 시 /api/boards/search?text=내용
     @GetMapping("/api/boards/search")
-    public Object getBoardSearch(@RequestParam String text){
+    public Object getBoardSearch(@RequestParam(required = false) String text){
         try{
             List<Boards> boardsList = boardsService.getBoardsSearch(text);
             System.out.println("getBoardSearch");
@@ -51,7 +54,7 @@ public class BoardsController {
         }
         catch (Exception ignore)
         {
-            String errorMessage = "test";
+            String errorMessage = "text를 입력해주세요.";
             HttpStatus status = HttpStatus.BAD_REQUEST;
             CustomMessageResponse errors = new CustomMessageResponse(errorMessage,status.value());
 
@@ -62,9 +65,47 @@ public class BoardsController {
     }
 
     @PostMapping("/api/boards")
-    public Boards createBoards(@RequestBody BoardsRequestDto boardsRequestDto){
-        System.out.println("createBoards");
-        Boards boards = new Boards(boardsRequestDto);
-        return boardsRepository.save(boards);
+    public Boards createBoards(HttpServletRequest req,
+                               @RequestParam(value = "files", required = false) List<MultipartFile> files,
+                               @RequestParam("title") String title,
+                               @RequestParam("contents") String contents)
+    {
+        try
+        {
+            System.out.println(req.getRequestURL());
+            BoardsRequestDto boardsRequestDto = new BoardsRequestDto();
+            boardsRequestDto.setTitle(title);
+            boardsRequestDto.setContents(contents);
+
+            if (files == null)
+            {
+                boardsRequestDto.setImgFilePath("");
+                Boards boards = new Boards(boardsRequestDto);
+                return boardsRepository.save(boards);
+            }
+            else{
+                MultipartFile multipartFile = files.get(0);
+                String fileName = multipartFile.getOriginalFilename();
+                String rootPath = this.getClass().getResource("/").getPath();
+                String fullPath = boardsService.getFullPath(rootPath, fileName);
+
+                multipartFile.transferTo(new File(fullPath));
+
+                for (int i = 0; i < files.size(); i++)
+                {
+                    System.out.println(files.get(i).getOriginalFilename());
+                }
+
+                boardsRequestDto.setImgFilePath(fullPath);
+                Boards boards = new Boards(boardsRequestDto);
+                System.out.println(boardsRequestDto);
+                return boardsRepository.save(boards);
+            }
+
+        }
+        catch (Exception e){
+            System.out.println(e);
+            return null;
+        }
     }
 }

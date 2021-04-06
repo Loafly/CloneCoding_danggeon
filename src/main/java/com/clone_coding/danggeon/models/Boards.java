@@ -3,7 +3,6 @@ package com.clone_coding.danggeon.models;
 import com.clone_coding.danggeon.dto.BoardsRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 
 @NoArgsConstructor
@@ -24,9 +23,17 @@ public class Boards {
 //    @JoinColumn(name = "USER_ID")
 //    private User user;
 
+    @Column
+    private String imgFilePath;
+
+//    public Boards(BoardsRequestDto boardsRequestDto){
+//        this.title = boardsRequestDto.getTitle();
+//        this.contents = boardsRequestDto.getContents();
+//    }
     public Boards(BoardsRequestDto boardsRequestDto){
         this.title = boardsRequestDto.getTitle();
         this.contents = boardsRequestDto.getContents();
+        this.imgFilePath = boardsRequestDto.getImgFilePath();
     }
 
 //    public Boards(BoardsRequestDto boardsRequestDto, User user){

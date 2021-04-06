@@ -8,6 +8,5 @@ import java.util.Optional;
 
 public interface BoardsRepository extends JpaRepository<Boards,Long> {
     Optional<Boards> findById(Long id);
-    List<Boards>findByTitleLikeOrContentsLike(String title, String contents);
-
+    List<Boards> findByTitleIsLikeOrContentsIsLike(String title, String contents);
 }

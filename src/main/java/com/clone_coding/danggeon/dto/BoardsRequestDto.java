@@ -12,5 +12,5 @@ import java.util.List;
 public class BoardsRequestDto {
     private String title;
     private String contents;
-    private List<String> imgFile;
+    private String imgFilePath;
 }

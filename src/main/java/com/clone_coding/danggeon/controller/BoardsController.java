@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -66,25 +67,41 @@ public class BoardsController {
     }
 
     @PostMapping("/api/boards")
-    public Boards createBoards(@RequestBody BoardsRequestDto boardsRequestDto){
-        System.out.println("createBoards");
-        Boards boards = new Boards(boardsRequestDto);
-        System.out.println(boardsRequestDto);
-        System.out.println(boards.getImgFile());
-        return boardsRepository.save(boards);
-    }
+    public Boards createBoards(@RequestParam("files") List<MultipartFile> files,
+                               @RequestParam("title") String title,
+                               @RequestParam("contents") String contents)
+    {
+        try
+        {
+            BoardsRequestDto boardsRequestDto = new BoardsRequestDto();
+            boardsRequestDto.setTitle(title);
+            boardsRequestDto.setTitle(contents);
 
-    @PostMapping("/uploadMultipleFiles")
-    public String fileupload(@RequestBody List<MultipartFile> files){
-        System.out.println("files");
-        System.out.println(files);
-        try{
-            for(int i=0;i<files.size();i++){
-                files.get(i).transferTo(new File("파일경로"+files.get(i).getOriginalFilename()));
+            if (files == null)
+            {
+                boardsRequestDto.setImgFilePath("");
+                Boards boards = new Boards(boardsRequestDto);
+                return boardsRepository.save(boards);
             }
-        }catch (IllegalStateException | IOException e){
-            e.printStackTrace();
+            else{
+                MultipartFile multipartFile = files.get(0);
+                String fileName = multipartFile.getOriginalFilename();
+                multipartFile.transferTo(new File("D:\\" + fileName));
+                for (int i = 0; i < files.size(); i++)
+                {
+                    System.out.println(files.get(i).getOriginalFilename());
+                }
+
+                boardsRequestDto.setImgFilePath(fileName);
+                Boards boards = new Boards(boardsRequestDto);
+                System.out.println(boardsRequestDto);
+                return boardsRepository.save(boards);
+            }
+
         }
-        return "file upload";
+        catch (Exception e){
+            System.out.println(e);
+            return null;
+        }
     }
 }

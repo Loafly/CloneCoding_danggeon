@@ -4,6 +4,7 @@ import io.jsonwebtoken.*;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Date;
 
@@ -29,11 +30,12 @@ public class JwtTokenProvider {
         Date validity = new Date(now.getTime()
                 + validityInMilliseconds);
 
+
         return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
+                .setClaims(claims)//정보저장
+                .setIssuedAt(now) //토큰 발행 시간 정보
                 .setExpiration(validity)
-                .signWith(SignatureAlgorithm.HS256, secretKey)// 사용할 암호화 알고리즘과
+                .signWith(SignatureAlgorithm.HS512, secretKey.getBytes())// 사용할 암호화 알고리즘과 HS256
                                                               // signature 에 들어갈 secret값 세팅
                 .compact();
     }
@@ -45,14 +47,22 @@ public class JwtTokenProvider {
 
     //유효한 토큰인지 확인
     public boolean validateToken(String token) {
+//        try {
+//            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+//            if (claims.getBody().getExpiration().before(new Date())) {
+//                return false;
+//            }
+//            return true;
+//        } catch (JwtException | IllegalArgumentException e) {
+//            return false;
+//        }
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-            if (claims.getBody().getExpiration().before(new Date())) {
-                return false;
-            }
-            return true;
-        } catch (JwtException | IllegalArgumentException e) {
+            return !claims.getBody().getExpiration().before(new Date());
+        } catch (Exception e) {
             return false;
         }
+
+
     }
 }

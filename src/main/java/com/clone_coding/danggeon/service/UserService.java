@@ -70,4 +70,9 @@ public class UserService {
     public String createToken(UserLoginRequestDto requestDto) {
         return jwtTokenProvider.createToken(requestDto.getUsername());
     }
+
+    public User findByName(String username) {
+        User user = userRepository.findByUsername(username);
+        return user;
+    }
 }

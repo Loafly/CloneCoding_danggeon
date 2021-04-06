@@ -1,5 +1,6 @@
 package com.clone_coding.danggeon.controller;
 
+import com.clone_coding.danggeon.bcrypt.EncryptHelper;
 import com.clone_coding.danggeon.dto.UserCheckNameDto;
 import com.clone_coding.danggeon.dto.UserSignupRequestDto;
 import com.clone_coding.danggeon.handler.CreateError;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.List;
 
-@CrossOrigin(origins = "*")
+
 @RestController
 @CrossOrigin(origins = "*")
 public class UserSignupController {

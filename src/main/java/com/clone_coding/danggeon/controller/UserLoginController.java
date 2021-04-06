@@ -2,8 +2,10 @@ package com.clone_coding.danggeon.controller;
 
 import com.clone_coding.danggeon.dto.UserLoginRequestDto;
 
+import com.clone_coding.danggeon.handler.CreateError;
 import com.clone_coding.danggeon.handler.CustomMessageResponse;
 import com.clone_coding.danggeon.repository.UserRepository;
+import com.clone_coding.danggeon.response.TokenResponse;
 import com.clone_coding.danggeon.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,8 +45,13 @@ public class UserLoginController {
                     .status(status)
                     .body(errors);
         }
-        String str = "yes";
-        return str;
+        if(!userService.checkUsernameAndPassword(requestDto)) {
+            return new CreateError().error("비밀번호가 일치하지 않습니다.");
+        }else {
+            String token = userService.createToken(requestDto);
+            return ResponseEntity.ok().body(new TokenResponse(token, "bearer"));
+        }
+
     }
 
 

@@ -30,6 +30,4 @@ public class BoardsService {
         text = "%" + text + "%";
         return boardsRepository.findByTitleLikeOrContentsLike(text,text);
     }
-
-
 }

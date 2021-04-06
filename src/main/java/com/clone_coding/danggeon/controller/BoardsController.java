@@ -9,7 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 //http://clonefront.me.s3-website.ap-northeast-2.amazonaws.com/
@@ -65,6 +69,22 @@ public class BoardsController {
     public Boards createBoards(@RequestBody BoardsRequestDto boardsRequestDto){
         System.out.println("createBoards");
         Boards boards = new Boards(boardsRequestDto);
+        System.out.println(boardsRequestDto);
+        System.out.println(boards.getImgFile());
         return boardsRepository.save(boards);
+    }
+
+    @PostMapping("/uploadMultipleFiles")
+    public String fileupload(@RequestBody List<MultipartFile> files){
+        System.out.println("files");
+        System.out.println(files);
+        try{
+            for(int i=0;i<files.size();i++){
+                files.get(i).transferTo(new File("파일경로"+files.get(i).getOriginalFilename()));
+            }
+        }catch (IllegalStateException | IOException e){
+            e.printStackTrace();
+        }
+        return "file upload";
     }
 }

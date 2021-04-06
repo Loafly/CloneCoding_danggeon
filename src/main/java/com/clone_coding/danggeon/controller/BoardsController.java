@@ -10,11 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 //http://clonefront.me.s3-website.ap-northeast-2.amazonaws.com/
@@ -67,15 +65,17 @@ public class BoardsController {
     }
 
     @PostMapping("/api/boards")
-    public Boards createBoards(@RequestParam("files") List<MultipartFile> files,
+    public Boards createBoards(HttpServletRequest req,
+                               @RequestParam(value = "files", required = false) List<MultipartFile> files,
                                @RequestParam("title") String title,
                                @RequestParam("contents") String contents)
     {
         try
         {
+            System.out.println(req.getRequestURL());
             BoardsRequestDto boardsRequestDto = new BoardsRequestDto();
             boardsRequestDto.setTitle(title);
-            boardsRequestDto.setTitle(contents);
+            boardsRequestDto.setContents(contents);
 
             if (files == null)
             {
@@ -86,7 +86,11 @@ public class BoardsController {
             else{
                 MultipartFile multipartFile = files.get(0);
                 String fileName = multipartFile.getOriginalFilename();
-                multipartFile.transferTo(new File("D:\\" + fileName));
+                String rootPath = this.getClass().getResource("/").getPath();
+                String fullPath = boardsService.getFullPath(rootPath, fileName);
+
+//                multipartFile.transferTo(new File(fullPath + fileName));
+
                 for (int i = 0; i < files.size(); i++)
                 {
                     System.out.println(files.get(i).getOriginalFilename());

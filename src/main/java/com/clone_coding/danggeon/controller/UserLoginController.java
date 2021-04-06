@@ -4,17 +4,16 @@ import com.clone_coding.danggeon.dto.UserLoginRequestDto;
 
 import com.clone_coding.danggeon.handler.CreateError;
 import com.clone_coding.danggeon.handler.CustomMessageResponse;
+import com.clone_coding.danggeon.models.User;
 import com.clone_coding.danggeon.repository.UserRepository;
 import com.clone_coding.danggeon.response.TokenResponse;
 import com.clone_coding.danggeon.service.UserService;
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -28,6 +27,12 @@ public class UserLoginController {
     public UserLoginController(UserService userService, UserRepository userRepository) {
         this.userService = userService;
         this.userRepository = userRepository;
+    }
+
+
+    @GetMapping("/api/users")
+    public List<User> getUser(){
+        return userService.findAll();
     }
 
 

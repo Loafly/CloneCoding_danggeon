@@ -1,18 +1,21 @@
 package com.clone_coding.danggeon.service;
 
+import com.clone_coding.danggeon.dto.UserCheckNameDto;
 import com.clone_coding.danggeon.dto.UserSignupRequestDto;
 import com.clone_coding.danggeon.models.User;
 import com.clone_coding.danggeon.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
-public class UserLoginService {
+public class UserService {
     private final UserRepository userRepository;
 //    private final PasswordEncoder passwordEncoder;
 
-    public UserLoginService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -34,5 +37,17 @@ public class UserLoginService {
             return false;
         }
         return true;
+    }
+
+    //username 존재하는지 확인하기
+    public boolean existByUsername(UserCheckNameDto userCheckNameDto) {
+        boolean flag = userRepository.existsByUsername(userCheckNameDto.getUsername());
+        return flag;
+    }
+
+    //회원목록 조회
+    public List<User> findAll() {
+        List<User> users = userRepository.findAll();
+        return users;
     }
 }

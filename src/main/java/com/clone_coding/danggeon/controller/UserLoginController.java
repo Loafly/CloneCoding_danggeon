@@ -1,9 +1,10 @@
 package com.clone_coding.danggeon.controller;
 
 import com.clone_coding.danggeon.dto.UserLoginRequestDto;
-import com.clone_coding.danggeon.handler.CustomErrorResponse;
+
+import com.clone_coding.danggeon.handler.CustomMessageResponse;
 import com.clone_coding.danggeon.repository.UserRepository;
-import com.clone_coding.danggeon.service.UserLoginService;
+import com.clone_coding.danggeon.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -19,10 +20,10 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 @RestController
 public class UserLoginController {
-    private final UserLoginService userService;
+    private final UserService userService;
     private final UserRepository userRepository;
 
-    public UserLoginController(UserLoginService userService, UserRepository userRepository) {
+    public UserLoginController(UserService userService, UserRepository userRepository) {
         this.userService = userService;
         this.userRepository = userRepository;
     }
@@ -37,7 +38,7 @@ public class UserLoginController {
             List<ObjectError> allErrors = bindingResult.getAllErrors();
             String errorMessage = allErrors.get(0).getDefaultMessage();
             HttpStatus status = HttpStatus.BAD_REQUEST;
-            CustomErrorResponse errors = new CustomErrorResponse(errorMessage,status.value());
+            CustomMessageResponse errors = new CustomMessageResponse(errorMessage,status.value());
             return ResponseEntity
                     .status(status)
                     .body(errors);

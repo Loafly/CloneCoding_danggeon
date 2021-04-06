@@ -46,7 +46,7 @@ public class BoardsController {
 
 //    Get요청 시 /api/boards/search?text=내용
     @GetMapping("/api/boards/search")
-    public Object getBoardSearch(@RequestParam String text){
+    public Object getBoardSearch(@RequestParam(required = false) String text){
         try{
             List<Boards> boardsList = boardsService.getBoardsSearch(text);
             System.out.println("getBoardSearch");
@@ -54,7 +54,7 @@ public class BoardsController {
         }
         catch (Exception ignore)
         {
-            String errorMessage = "test";
+            String errorMessage = "text를 입력해주세요.";
             HttpStatus status = HttpStatus.BAD_REQUEST;
             CustomMessageResponse errors = new CustomMessageResponse(errorMessage,status.value());
 
@@ -89,14 +89,14 @@ public class BoardsController {
                 String rootPath = this.getClass().getResource("/").getPath();
                 String fullPath = boardsService.getFullPath(rootPath, fileName);
 
-//                multipartFile.transferTo(new File(fullPath + fileName));
+                multipartFile.transferTo(new File(fullPath));
 
                 for (int i = 0; i < files.size(); i++)
                 {
                     System.out.println(files.get(i).getOriginalFilename());
                 }
 
-                boardsRequestDto.setImgFilePath(fileName);
+                boardsRequestDto.setImgFilePath(fullPath);
                 Boards boards = new Boards(boardsRequestDto);
                 System.out.println(boardsRequestDto);
                 return boardsRepository.save(boards);

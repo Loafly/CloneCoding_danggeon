@@ -31,7 +31,7 @@ public class BoardsService {
         }
 
         text = "%" + text + "%";
-        return boardsRepository.findByTitleLikeOrContentsLike(text,text);
+        return boardsRepository.findByTitleIsLikeOrContentsIsLike(text,text);
     }
 
     public void mkDir(String path){
@@ -57,12 +57,13 @@ public class BoardsService {
     }
 
     public String getFullPath(String rootPath, String originFileName){
-        String path = rootPath + "/img";
+        String path = rootPath + "img";
         mkDir(path);
         Date date_now = new Date(System.currentTimeMillis()); // 현재시간을 가져와 Date형으로 저장한다
         // 년월일시분초 14자리 포멧
         SimpleDateFormat fourteen_format = new SimpleDateFormat("yyyyMMddHHmmss");
         System.out.println(fourteen_format.format(date_now)); // 14자리 포멧으로 출력한다
-        return "test";
+
+        return path + "/" + fourteen_format.format(date_now) + originFileName;
     }
 }

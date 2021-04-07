@@ -61,17 +61,14 @@ public class BoardsService {
         }
     }
 
-//    public String getFullPath(String rootPath, String originFileName){
-    public String getFullPath(String originFileName){
-        String path = "img";
-        System.out.println("path = " + path);
-        mkDir(path);
+    public String getFullPath(String originFileName,String rootPath){
+        mkDir(rootPath);
         Date date_now = new Date(System.currentTimeMillis()); // 현재시간을 가져와 Date형으로 저장한다
         // 년월일시분초 14자리 포멧
         SimpleDateFormat fourteen_format = new SimpleDateFormat("yyyyMMddHHmmss");
-        System.out.println("time = " + fourteen_format.format(date_now)); // 14자리 포멧으로 출력한다
+        System.out.println(fourteen_format.format(date_now)); // 14자리 포멧으로 출력한다
 
-        return path + "/" + fourteen_format.format(date_now) + originFileName;
+        return fourteen_format.format(date_now) + originFileName ;
     }
 
 }

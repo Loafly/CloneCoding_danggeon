@@ -6,6 +6,7 @@ import com.clone_coding.danggeon.models.Boards;
 import com.clone_coding.danggeon.repository.BoardsRepository;
 import com.clone_coding.danggeon.service.BoardsService;
 import com.clone_coding.danggeon.utils.GetBoards;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 //http://clonefront.me.s3-website.ap-northeast-2.amazonaws.com/
@@ -78,6 +81,8 @@ public class BoardsController {
             boardsRequestDto.setTitle(title);
             boardsRequestDto.setContents(contents);
 
+            String IMAGEPATH = "src/main/resources/static/images/profile/";
+
             if (files == null)
             {
                 boardsRequestDto.setImgFilePath("");
@@ -87,22 +92,17 @@ public class BoardsController {
             else{
                 MultipartFile multipartFile = files.get(0);
                 String fileName = multipartFile.getOriginalFilename();
-//                String fullPath = boardsService.getFullPath(fileName);
 
-                String realPath = req.getSession().getServletContext().getRealPath("/resources/img/");
-//                boardsService.mkDir(fileName);
+                String dateTimeFileName = boardsService.getFullPath(fileName, IMAGEPATH);
 
-//                System.out.println("fullPath = " + fullPath);
-                File file = new File(fileName);
-                System.out.println(file.getPath());
-                multipartFile.transferTo(file);
+                File targetFile = new File(IMAGEPATH, dateTimeFileName);
 
-                for (int i = 0; i < files.size(); i++)
-                {
-                    System.out.println(files.get(i).getOriginalFilename());
-                }
+                InputStream fileStream = multipartFile.getInputStream();
+                FileUtils.copyInputStreamToFile(fileStream, targetFile);
 
-                boardsRequestDto.setImgFilePath(file.getPath());
+                String pre_Path = "/static/images/profile/";
+
+                boardsRequestDto.setImgFilePath(pre_Path + dateTimeFileName);
                 Boards boards = new Boards(boardsRequestDto);
                 System.out.println(boardsRequestDto);
                 return boardsRepository.save(boards);

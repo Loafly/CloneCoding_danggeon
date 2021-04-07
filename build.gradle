@@ -31,14 +31,15 @@ dependencies {
     // https://mvnrepository.com/artifact/org.json/json
     implementation group: 'org.json', name: 'json', version: '20160810'
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
-
     // 스프링 시큐리티
 //    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation group: 'org.mindrot', name: 'jbcrypt', version: '0.3m' // gradle
 
+    // https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload
+    implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
+
     // https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
     implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '3.141.59'
-
 }
 
 test {

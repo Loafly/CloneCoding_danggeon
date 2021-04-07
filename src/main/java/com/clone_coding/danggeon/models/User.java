@@ -5,11 +5,13 @@ import com.clone_coding.danggeon.dto.UserLoginRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class User extends Timestamped {
@@ -26,6 +28,9 @@ public class User extends Timestamped {
 
     @Column(nullable = false)
     private String email;
+
+    @Lob
+    private String profile_img;
 
     public User(UserLoginRequestDto requestDto) {
         this.username = requestDto.getUsername();

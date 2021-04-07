@@ -4,7 +4,6 @@ import com.clone_coding.danggeon.dto.UserProfileUpdateDto;
 import com.clone_coding.danggeon.handler.CustomMessageResponse;
 import com.clone_coding.danggeon.models.User;
 import com.clone_coding.danggeon.service.UserImageService;
-import com.clone_coding.danggeon.service.UserService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +32,7 @@ public class ProfileController {
 
     @GetMapping("/api/profile")
     public Object getUserFromToken(HttpServletRequest request) {
-        String username = (String)request.getAttribute("username");
+        String username = (String) request.getAttribute("username");
         User user = userImageService.findByName(username);
         return user;
     }
@@ -45,61 +44,32 @@ public class ProfileController {
             List<ObjectError> allErrors = bindingResult.getAllErrors();
             String errorMessage = allErrors.get(0).getDefaultMessage();
             HttpStatus status = HttpStatus.BAD_REQUEST;
-            CustomMessageResponse errors = new CustomMessageResponse(errorMessage,status.value());
+            CustomMessageResponse errors = new CustomMessageResponse(errorMessage, status.value());
             return ResponseEntity
                     .status(status)
                     .body(errors);
         }
         //request요청으로 들어온걸 토큰 인터셉터로 처리를하고 난 다음에 결과물이다.
-        String username = (String)request.getAttribute("username");
+        String username = (String) request.getAttribute("username");
         User user = userImageService.findByName(username);
         //파일이름을 시분초14자리를 만들고 다시 원래 파일이름을 뒤에 붙여준다.
-        String dateTimeFileName = userImageService.getFullPath(userProfileUpdateDto.getProfile_img().getOriginalFilename(),IMAGEPATH);
-        
-        File targetFile = new File("src/main/resources/static/images/profile/",dateTimeFileName);
+        String dateTimeFileName = userImageService.getFullPath(userProfileUpdateDto.getProfile_img().getOriginalFilename(), IMAGEPATH);
 
-        try{
+        File targetFile = new File("src/main/resources/static/images/profile/", dateTimeFileName);
+
+        try {
             System.out.println(userProfileUpdateDto.getProfile_img().getInputStream().getClass());
             InputStream fileStream = userProfileUpdateDto.getProfile_img().getInputStream();
-            FileUtils.copyInputStreamToFile(fileStream, targetFile );
+            FileUtils.copyInputStreamToFile(fileStream, targetFile);
 
             user.setUsername(userProfileUpdateDto.getUsername());
             user.setEmail(userProfileUpdateDto.getEmail());
             user.setProfile_img(dateTimeFileName);
 
-        }catch (IllegalStateException | IOException e) {
+        } catch (IllegalStateException | IOException e) {
             e.printStackTrace();
         }
         return user;
     }
-
-
-
-
-
-
-
-
-//    String username = (String)request.getAttribute("username");
-//    User user = userService.findByName(username);
-//
-//    String upload_path = this.getClass().getResource("/resources/").getPath()+"static/images/profile";
-//
-//        try{
-//        if (user.getProfile_img() != null) {//이미 프로필 사진이 있을 경우
-//            File file = new File(upload_path + user.getProfile_img()); //경로 + 유저 프로필 사진을 가져와서
-//            file.delete();
-//        }
-//        String fileName = userProfileUpdateDto.getProfile_img().getOriginalFilename();
-//        String fullPath = userService.getFullPath(upload_path, fileName);
-//        userProfileUpdateDto.getProfile_img().transferTo(new File(fullPath));//경로에 업로드
-//    }catch (IllegalStateException | IOException e) {
-//        e.printStackTrace();
-//    }
-//
-//        user.setUsername(userProfileUpdateDto.getUsername());
-//        user.setEmail(userProfileUpdateDto.getEmail());
-//        user.setProfile_img(userProfileUpdateDto.getProfile_img().getOriginalFilename());
-//        return user;
 }
 

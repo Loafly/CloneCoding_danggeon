@@ -27,7 +27,7 @@ public class GetBoards {
 
         // WebDriver 옵션 설정
         ChromeOptions options = new ChromeOptions();
-//        options.addArguments("headless");
+        options.addArguments("headless");
         options.addArguments("--start-maximized");            // 전체화면으로 실행
         options.addArguments("--disable-popup-blocking");    // 팝업 무시
         options.addArguments("--disable-default-apps");     // 기본앱 사용안함
@@ -56,8 +56,6 @@ public class GetBoards {
         List<WebElement> webElements = driver.findElementsByXPath("//*[@id=\"content\"]/section[1]/article");
         List<String> detailsUrlList = new ArrayList<>();
         for (int i = 0; i < webElements.size(); i++) {
-//            System.out.println(webElements.get(i).getText());
-//            String url = webElements.get(i).getAttribute("href");
             String url = webElements.get(i).findElement(By.tagName("a")).getAttribute("href");
             detailsUrlList.add(url);
 
@@ -74,33 +72,53 @@ public class GetBoards {
                 wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"slick-slide00\"]/div/a/div/div/img")));
                 wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"article-title\"]")));
                 wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"article-detail\"]")));
+                wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"nickname\"]")));
+                wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"article-price\"]")));
+
+
 
                 //*[@id="slick-slide00"]/div/a/div/div/img
 
                 String title = "";
                 String image = "";
                 String detail = "";
+                String username = "";
+                String price = "";
                 WebElement webElement;
 
-                //제목가지고 오기
+                //img 경로가져오기
                 webElement = driver.findElementByXPath("//*[@id=\"slick-slide00\"]/div/a/div/div/img");
                 image = webElement.getAttribute("src");
 
-                //카테고리 가지고 오기
+                //제목 가져오기
                 webElement = driver.findElementByXPath("//*[@id=\"article-title\"]");
                 title = webElement.getText();
 
-                //날짜 가지고 오기
+                //내용 가져오기
                 webElement = driver.findElementByXPath("//*[@id=\"article-detail\"]");
                 detail = webElement.getText();
+
+                //글쓴이 가져오기
+                webElement = driver.findElementByXPath("//*[@id=\"nickname\"]");
+                username = webElement.getText();
+
+                //글쓴이 가져오기
+                webElement = driver.findElementByXPath("//*[@id=\"article-price\"]");
+                price = webElement.getText();
+
+
 
                 System.out.println("image = " + image);
                 System.out.println("title = " + title);
                 System.out.println("detail = " + detail);
+                System.out.println("username = " + username);
+                System.out.println("price = " + (price));
 
                 boardsRequestDto.setImgFilePath(image);
                 boardsRequestDto.setTitle(title);
                 boardsRequestDto.setContents(detail);
+                boardsRequestDto.setUsername(username);
+                boardsRequestDto.setPrice(price);
 
                 Boards boards = new Boards(boardsRequestDto);
                 boardsRepository.save(boards);

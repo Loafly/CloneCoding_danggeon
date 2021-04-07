@@ -55,7 +55,6 @@ public class UserLoginController {
             String token = userService.createToken(requestDto);
             return ResponseEntity.ok().body(new TokenResponse(token, "bearer"));
         }
-
     }
 
 

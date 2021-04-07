@@ -4,8 +4,14 @@ import com.clone_coding.danggeon.models.Boards;
 import com.clone_coding.danggeon.repository.BoardsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.File;
+import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -36,8 +42,7 @@ public class BoardsService {
 
     public void mkDir(String path){
 
-        path.replace("/","\\");
-        System.out.println(path);
+        System.out.println("mkDir Path = " + path);
 
         File Folder = new File(path);
 
@@ -56,14 +61,17 @@ public class BoardsService {
         }
     }
 
-    public String getFullPath(String rootPath, String originFileName){
-        String path = rootPath + "img";
+//    public String getFullPath(String rootPath, String originFileName){
+    public String getFullPath(String originFileName){
+        String path = "img";
+        System.out.println("path = " + path);
         mkDir(path);
         Date date_now = new Date(System.currentTimeMillis()); // 현재시간을 가져와 Date형으로 저장한다
         // 년월일시분초 14자리 포멧
         SimpleDateFormat fourteen_format = new SimpleDateFormat("yyyyMMddHHmmss");
-        System.out.println(fourteen_format.format(date_now)); // 14자리 포멧으로 출력한다
+        System.out.println("time = " + fourteen_format.format(date_now)); // 14자리 포멧으로 출력한다
 
         return path + "/" + fourteen_format.format(date_now) + originFileName;
     }
+
 }

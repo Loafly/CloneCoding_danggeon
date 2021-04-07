@@ -5,6 +5,7 @@ import com.clone_coding.danggeon.dto.BoardsRequestDto;
 import com.clone_coding.danggeon.models.Boards;
 import com.clone_coding.danggeon.repository.BoardsRepository;
 import com.clone_coding.danggeon.service.BoardsService;
+import com.clone_coding.danggeon.utils.GetBoards;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -86,17 +87,22 @@ public class BoardsController {
             else{
                 MultipartFile multipartFile = files.get(0);
                 String fileName = multipartFile.getOriginalFilename();
-                String rootPath = this.getClass().getResource("/").getPath();
-                String fullPath = boardsService.getFullPath(rootPath, fileName);
+//                String fullPath = boardsService.getFullPath(fileName);
 
-                multipartFile.transferTo(new File(fullPath));
+                String realPath = req.getSession().getServletContext().getRealPath("/resources/img/");
+//                boardsService.mkDir(fileName);
+
+//                System.out.println("fullPath = " + fullPath);
+                File file = new File(fileName);
+                System.out.println(file.getPath());
+                multipartFile.transferTo(file);
 
                 for (int i = 0; i < files.size(); i++)
                 {
                     System.out.println(files.get(i).getOriginalFilename());
                 }
 
-                boardsRequestDto.setImgFilePath(fullPath);
+                boardsRequestDto.setImgFilePath(file.getPath());
                 Boards boards = new Boards(boardsRequestDto);
                 System.out.println(boardsRequestDto);
                 return boardsRepository.save(boards);
@@ -107,5 +113,13 @@ public class BoardsController {
             System.out.println(e);
             return null;
         }
+    }
+
+    @GetMapping("/api/crawlingBoards")
+    public String crawlingBoards(){
+        GetBoards getBoards = new GetBoards();
+        getBoards.crawlingBoards(this.boardsRepository);
+
+        return "success";
     }
 }

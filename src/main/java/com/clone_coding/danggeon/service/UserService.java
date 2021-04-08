@@ -1,17 +1,21 @@
 package com.clone_coding.danggeon.service;
 
 import com.clone_coding.danggeon.bcrypt.EncryptHelper;
+import com.clone_coding.danggeon.dto.PasswordFindingDto;
 import com.clone_coding.danggeon.dto.UserCheckNameDto;
 import com.clone_coding.danggeon.dto.UserLoginRequestDto;
 import com.clone_coding.danggeon.dto.UserSignupRequestDto;
 import com.clone_coding.danggeon.handler.JwtTokenProvider;
 import com.clone_coding.danggeon.models.User;
 import com.clone_coding.danggeon.repository.UserRepository;
+import com.clone_coding.danggeon.utils.MailUtil;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional(readOnly = true)
@@ -71,10 +75,49 @@ public class UserService {
         return jwtTokenProvider.createToken(requestDto.getUsername());
     }
 
-    public User findByName(String username) {
-        User user = userRepository.findByUsername(username);
-        return user;
+    //email로 아이디 찾기
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
+    //비밀번호 찾기
+    @Transactional
+    public String findPw(PasswordFindingDto passwordFindingDto) {
+        String result = null;
+
+        //회원 정보 불러오기
+        User userByEmail = userRepository.findByEmail(passwordFindingDto.getEmail());
+
+        //가입된 이메일이 존재한다면 이메일 발송
+        if (userByEmail != null) {
+            String tempPw = UUID.randomUUID().toString();
+
+            //uuid 너무 길어서 잘라주었다.
+            tempPw = tempPw.substring(0,10);
+
+            System.out.println("임시 비밀번호 : " + tempPw);
+
+            //user객체에 임시 비밀번호 담기 (여기서 왜 암호화를 안해줬냐면 메일을 보낼때 암호화한 패스워드를 보내주면 안되니깐)
+            userByEmail.setPassword(tempPw);
+
+            //메일 전송
+            MailUtil mail = new MailUtil();
+            try {
+                mail.sendMail(userByEmail);
+            } catch (Exception e) {
+                System.out.println("메일 보내기 오류입니다.");
+            }
+
+            //회원 비밀번호를 암호화하여 user객체에 다시 저장
+            String securePw = encryptHelper.encrypt(userByEmail.getPassword());
+            userByEmail.setPassword(securePw);
+
+            result = "Success";
+
+        } else
+            result = "Fail";
+
+        return result;
+    }
 
 }

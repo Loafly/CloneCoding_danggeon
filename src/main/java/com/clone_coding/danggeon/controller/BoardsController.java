@@ -1,14 +1,12 @@
 package com.clone_coding.danggeon.controller;
 
-import com.clone_coding.danggeon.handler.CustomMessageResponse;
 import com.clone_coding.danggeon.dto.BoardsRequestDto;
+import com.clone_coding.danggeon.handler.CustomMessageResponse;
 import com.clone_coding.danggeon.models.Boards;
-import com.clone_coding.danggeon.models.User;
 import com.clone_coding.danggeon.repository.BoardsRepository;
 import com.clone_coding.danggeon.service.BoardsService;
 import com.clone_coding.danggeon.service.S3Service;
 import com.clone_coding.danggeon.utils.GetBoards;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 //http://clonefront.me.s3-website.ap-northeast-2.amazonaws.com/

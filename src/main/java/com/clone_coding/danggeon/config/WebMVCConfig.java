@@ -20,6 +20,7 @@ public class WebMVCConfig implements WebMvcConfigurer {
         System.out.println(">>> 인터셉터 등록");
         registry.addInterceptor(bearerAuthInterceptor).addPathPatterns("/api/profile");
         registry.addInterceptor(bearerAuthInterceptor).addPathPatterns("/api/profile/update");
+        registry.addInterceptor(bearerAuthInterceptor).addPathPatterns("/api/boards");
     }
 
     @Override

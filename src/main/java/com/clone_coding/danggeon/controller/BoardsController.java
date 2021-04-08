@@ -85,8 +85,6 @@ public class BoardsController {
             System.out.println(req.getRequestURL());
 
             String username = (String)req.getAttribute("username");
-            username = "Loafly3";
-            User user = boardsService.findByName(username);
 
             BoardsRequestDto boardsRequestDto = new BoardsRequestDto();
             boardsRequestDto.setTitle(title);

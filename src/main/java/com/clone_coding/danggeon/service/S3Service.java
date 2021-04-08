@@ -22,12 +22,9 @@ public class S3Service {
     private AmazonS3 s3Client;
 
 //    @Value("${cloud.aws.credentials.accessKey}")
-    @Value("AKIASMHMW5M2RB6R6NFB")
-//    @Value("AKIAWXMOLSDH2F7RUZUH")
     private String accessKey;
 
-    @Value("rmXhmQbSZUoNDs+e4RbkBiLdws4PFTErfPs9I7/k")
-//    @Value("7Mf00O8OIM1avgIl+7Zv6f35GRoYORryiB+A5+Ex")
+//    @Value("${cloud.aws.credentials.secretKey}")
     private String secretKey;
 
     @Value("clonedanggeon")

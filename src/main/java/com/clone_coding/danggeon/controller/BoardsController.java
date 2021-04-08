@@ -3,8 +3,11 @@ package com.clone_coding.danggeon.controller;
 import com.clone_coding.danggeon.handler.CustomMessageResponse;
 import com.clone_coding.danggeon.dto.BoardsRequestDto;
 import com.clone_coding.danggeon.models.Boards;
+import com.clone_coding.danggeon.models.User;
 import com.clone_coding.danggeon.repository.BoardsRepository;
 import com.clone_coding.danggeon.service.BoardsService;
+import com.clone_coding.danggeon.utils.GetBoards;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 //http://clonefront.me.s3-website.ap-northeast-2.amazonaws.com/
@@ -68,14 +72,23 @@ public class BoardsController {
     public Boards createBoards(HttpServletRequest req,
                                @RequestParam(value = "files", required = false) List<MultipartFile> files,
                                @RequestParam("title") String title,
-                               @RequestParam("contents") String contents)
+                               @RequestParam("contents") String contents,
+                               @RequestParam("price") String price)
     {
         try
         {
             System.out.println(req.getRequestURL());
+
+            String username = (String) req.getAttribute("username");
+            User user = boardsService.findByName(username);
+
             BoardsRequestDto boardsRequestDto = new BoardsRequestDto();
             boardsRequestDto.setTitle(title);
             boardsRequestDto.setContents(contents);
+            boardsRequestDto.setPrice(price);
+            boardsRequestDto.setUsername(username);
+
+            String IMAGEPATH = "src/main/resources/static/images/boards/";
 
             if (files == null)
             {
@@ -86,17 +99,17 @@ public class BoardsController {
             else{
                 MultipartFile multipartFile = files.get(0);
                 String fileName = multipartFile.getOriginalFilename();
-                String rootPath = this.getClass().getResource("/").getPath();
-                String fullPath = boardsService.getFullPath(rootPath, fileName);
 
-                multipartFile.transferTo(new File(fullPath));
+                String dateTimeFileName = boardsService.getFullPath(fileName, IMAGEPATH);
 
-                for (int i = 0; i < files.size(); i++)
-                {
-                    System.out.println(files.get(i).getOriginalFilename());
-                }
+                File targetFile = new File(IMAGEPATH, dateTimeFileName);
 
-                boardsRequestDto.setImgFilePath(fullPath);
+                InputStream fileStream = multipartFile.getInputStream();
+                FileUtils.copyInputStreamToFile(fileStream, targetFile);
+
+                String pre_Path = "static/images/boards/";
+
+                boardsRequestDto.setImgFilePath(pre_Path + dateTimeFileName);
                 Boards boards = new Boards(boardsRequestDto);
                 System.out.println(boardsRequestDto);
                 return boardsRepository.save(boards);
@@ -107,5 +120,13 @@ public class BoardsController {
             System.out.println(e);
             return null;
         }
+    }
+
+    @GetMapping("/api/crawlingBoards")
+    public String crawlingBoards(){
+        GetBoards getBoards = new GetBoards();
+        getBoards.crawlingBoards(this.boardsRepository);
+
+        return "success";
     }
 }

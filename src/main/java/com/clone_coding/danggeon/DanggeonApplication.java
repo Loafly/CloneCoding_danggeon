@@ -2,6 +2,7 @@ package com.clone_coding.danggeon;
 
 import com.clone_coding.danggeon.bcrypt.BcryptImpl;
 import com.clone_coding.danggeon.bcrypt.EncryptHelper;
+import com.clone_coding.danggeon.utils.GetBoards;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;

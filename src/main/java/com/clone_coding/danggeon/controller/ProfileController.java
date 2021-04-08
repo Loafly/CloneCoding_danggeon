@@ -55,16 +55,19 @@ public class ProfileController {
         //파일이름을 시분초14자리를 만들고 다시 원래 파일이름을 뒤에 붙여준다.
         String dateTimeFileName = userImageService.getFullPath(userProfileUpdateDto.getProfile_img().getOriginalFilename(), IMAGEPATH);
 
-        File targetFile = new File("src/main/resources/static/images/profile/", dateTimeFileName);
+        File targetFile = new File(IMAGEPATH, dateTimeFileName);
 
         try {
             System.out.println(userProfileUpdateDto.getProfile_img().getInputStream().getClass());
             InputStream fileStream = userProfileUpdateDto.getProfile_img().getInputStream();
             FileUtils.copyInputStreamToFile(fileStream, targetFile);
 
+            String pre_Path = "/static/images/profile/";
+
             user.setUsername(userProfileUpdateDto.getUsername());
             user.setEmail(userProfileUpdateDto.getEmail());
-            user.setProfile_img(dateTimeFileName);
+            user.setProfile_img(pre_Path + dateTimeFileName);
+
 
         } catch (IllegalStateException | IOException e) {
             e.printStackTrace();

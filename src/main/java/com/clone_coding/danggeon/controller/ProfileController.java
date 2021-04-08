@@ -53,7 +53,10 @@ public class ProfileController {
             return ResponseEntity
                     .status(status)
                     .body(errors);
+
         }
+
+
         //request요청으로 들어온걸 토큰 인터셉터로 처리를하고 난 다음에 결과물이다.
         String username = (String) request.getAttribute("username");
         User user = userImageService.findByName(username);

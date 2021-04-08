@@ -36,7 +36,7 @@ public class MailUtil {
             mail.setCharset(charSet);
             mail.setSSLOnConnect(true); //SSL 사용
             mail.setHostName(hostSMTP);
-            mail.setSmtpPort(587); //SMTP 포트 번호
+            mail.setSmtpPort(465); //SMTP 포트 번호
             mail.setAuthentication(hostSMTPid, hostSMTPpw);
             mail.setStartTLSEnabled(true); //TLS 사용
             mail.addTo(mailRecipient, charSet);

@@ -8,7 +8,6 @@ import com.clone_coding.danggeon.models.User;
 import com.clone_coding.danggeon.repository.UserRepository;
 import com.clone_coding.danggeon.response.TokenResponse;
 import com.clone_coding.danggeon.service.UserService;
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -56,7 +55,6 @@ public class UserLoginController {
             String token = userService.createToken(requestDto);
             return ResponseEntity.ok().body(new TokenResponse(token, "bearer"));
         }
-
     }
 
 

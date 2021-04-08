@@ -1,11 +1,19 @@
 package com.clone_coding.danggeon.service;
 
 import com.clone_coding.danggeon.models.Boards;
+import com.clone_coding.danggeon.models.User;
 import com.clone_coding.danggeon.repository.BoardsRepository;
+import com.clone_coding.danggeon.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.File;
+import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -13,10 +21,12 @@ import java.util.List;
 @Service
 public class BoardsService {
     private final BoardsRepository boardsRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    BoardsService(BoardsRepository boardsRepository){
+    BoardsService(BoardsRepository boardsRepository, UserRepository userRepository){
         this.boardsRepository = boardsRepository;
+        this.userRepository = userRepository;
     }
 
     public Boards getBoard(Long id){
@@ -36,8 +46,7 @@ public class BoardsService {
 
     public void mkDir(String path){
 
-        path.replace("/","\\");
-        System.out.println(path);
+        System.out.println("mkDir Path = " + path);
 
         File Folder = new File(path);
 
@@ -56,14 +65,21 @@ public class BoardsService {
         }
     }
 
-    public String getFullPath(String rootPath, String originFileName){
-        String path = rootPath + "img";
-        mkDir(path);
+    public String getFullPath(String originFileName,String rootPath){
+        mkDir(rootPath);
         Date date_now = new Date(System.currentTimeMillis()); // 현재시간을 가져와 Date형으로 저장한다
         // 년월일시분초 14자리 포멧
         SimpleDateFormat fourteen_format = new SimpleDateFormat("yyyyMMddHHmmss");
         System.out.println(fourteen_format.format(date_now)); // 14자리 포멧으로 출력한다
 
-        return path + "/" + fourteen_format.format(date_now) + originFileName;
+        return fourteen_format.format(date_now) + originFileName ;
     }
+
+    public User findByName(String username) {
+        User user = userRepository.findByUsername(username);
+        return user;
+    }
+
+
+
 }

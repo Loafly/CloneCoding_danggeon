@@ -6,6 +6,7 @@ import com.clone_coding.danggeon.models.Boards;
 import com.clone_coding.danggeon.models.User;
 import com.clone_coding.danggeon.repository.BoardsRepository;
 import com.clone_coding.danggeon.service.BoardsService;
+import com.clone_coding.danggeon.service.S3Service;
 import com.clone_coding.danggeon.utils.GetBoards;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 //http://clonefront.me.s3-website.ap-northeast-2.amazonaws.com/
@@ -30,10 +32,13 @@ public class BoardsController {
     BoardsRepository boardsRepository;
     BoardsService boardsService;
 
+    S3Service s3Service;
+
     @Autowired
-    BoardsController(BoardsService boardsService, BoardsRepository boardsRepository){
+    BoardsController(BoardsService boardsService, BoardsRepository boardsRepository, S3Service s3Service){
         this.boardsRepository = boardsRepository;
         this.boardsService = boardsService;
+        this.s3Service = s3Service;
     }
 
     @GetMapping("/api/boards")
@@ -79,7 +84,8 @@ public class BoardsController {
         {
             System.out.println(req.getRequestURL());
 
-            String username = (String) req.getAttribute("username");
+            String username = (String)req.getAttribute("username");
+            username = "Loafly3";
             User user = boardsService.findByName(username);
 
             BoardsRequestDto boardsRequestDto = new BoardsRequestDto();
@@ -87,6 +93,7 @@ public class BoardsController {
             boardsRequestDto.setContents(contents);
             boardsRequestDto.setPrice(price);
             boardsRequestDto.setUsername(username);
+            System.out.println("username = " + username);
 
             String IMAGEPATH = "src/main/resources/static/images/boards/";
 
@@ -100,18 +107,22 @@ public class BoardsController {
                 MultipartFile multipartFile = files.get(0);
                 String fileName = multipartFile.getOriginalFilename();
 
-                String dateTimeFileName = boardsService.getFullPath(fileName, IMAGEPATH);
+//                String dateTimeFileName = boardsService.getFullPath(fileName, IMAGEPATH);
+//
+//                File targetFile = new File(IMAGEPATH, dateTimeFileName);
+//
+//                InputStream fileStream = multipartFile.getInputStream();
+//                FileUtils.copyInputStreamToFile(fileStream, targetFile);
+//
+//                String pre_Path = "static/images/boards/";
 
-                File targetFile = new File(IMAGEPATH, dateTimeFileName);
+                String url = s3Service.upload(multipartFile);
 
-                InputStream fileStream = multipartFile.getInputStream();
-                FileUtils.copyInputStreamToFile(fileStream, targetFile);
-
-                String pre_Path = "static/images/boards/";
-
-                boardsRequestDto.setImgFilePath(pre_Path + dateTimeFileName);
+                System.out.println("url = " + url);
+                boardsRequestDto.setImgFilePath(url);
                 Boards boards = new Boards(boardsRequestDto);
                 System.out.println(boardsRequestDto);
+
                 return boardsRepository.save(boards);
             }
 
